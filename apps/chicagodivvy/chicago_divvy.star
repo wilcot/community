@@ -108,19 +108,19 @@ def get_schema():
 
 def main(config):
     station_config = config.get("station")
-    if station_config == None:
-        station_id = PLACEHOLDER_STATION_ID
+    if station_config == None: # Generate fake data
+        ebikes_available = "3"
+        bikes_available = "5"
+        station_name = "Halsted & Roscoe"
     else:
         station_config = json.decode(station_config)
         station_id = station_config["value"]
-    station = find_station_status_by_id(station_id = station_id)
-
-    # Number of ebikes
-    ebikes_available = str(int(station["num_ebikes_available"]))
-
-    # bikes_available includes classic and ebikes. Subtracting the ebikes to get classic (non-ebikes) count
-    bikes_available = str(int(station["num_bikes_available"] - int(station["num_ebikes_available"])))
-
+        station = find_station_status_by_id(station_id = station_id)
+        # Number of ebikes
+        ebikes_available = str(int(station["num_ebikes_available"]))
+        # bikes_available includes classic and ebikes. Subtracting the ebikes to get classic (non-ebikes) count
+        bikes_available = str(int(station["num_bikes_available"] - int(station["num_ebikes_available"])))
+        station_name = find_station_name_by_id(station_id = station_id)
     return render.Root(
         render.Column(
             main_align = "space_evenly",
@@ -128,7 +128,7 @@ def main(config):
             children = [
                 render.Marquee(
                     child = render.Text(
-                        content = find_station_name_by_id(station_id = station_id),
+                        content = station_name,
                         font = "5x8",
                     ),
                     width = 64,
